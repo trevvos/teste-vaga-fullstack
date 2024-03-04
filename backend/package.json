@@ -4,7 +4,8 @@
   "description": "Teste vaga fullstack",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/supertest": "^6.0.2"
+    "@types/supertest": "^6.0.2",
+    "ts-node": "^10.9.2"
   }
 }
