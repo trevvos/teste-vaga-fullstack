@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: knonoos-teste-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: knonoos-teste-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
