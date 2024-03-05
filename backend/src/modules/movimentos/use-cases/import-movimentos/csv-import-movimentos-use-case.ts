@@ -5,6 +5,7 @@ import { Movimento } from "../../entities/Movimento";
 import { ImportMovimentosUseCase } from "./import-movimentos-use-case";
 import { MovimentoRepository } from '../../repositories/movimentos.repository';
 import { PrismaMovimentosRepository } from '../../../../shared/infra/database/prisma/repositories/prisma-movimentos-repository';
+import { convertToDate } from '../../../../utils/date.utils';
 
 class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
     private readonly movimentoRepository: MovimentoRepository
@@ -28,7 +29,7 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                         nmClient: row.nmClient,
                         nrCpfCnpj: row.nrCpfCnpj,
                         nrContrato: row.nrContrato,
-                        dtContrato: row.dtContrato,
+                        dtContrato: convertToDate(row.dtContrato),
                         qtPrestacoes: row.qtPrestacoes,
                         vlTotal: row.vlTotal,
                         cdProduto: row.cdProduto,
@@ -39,7 +40,7 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                         nrPresta: row.nrPresta,
                         tpPresta: row.tpPresta,
                         nrSeqPre: row.nrSeqPre,
-                        dtVctPre: row.dtVctPre,
+                        dtVctPre: convertToDate(row.dtVctPre),
                         vlPresta: row.vlPresta,
                         vlMora: row.vlMora,
                         vlMulta: row.vlMulta,
