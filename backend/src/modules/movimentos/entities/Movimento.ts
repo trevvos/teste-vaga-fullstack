@@ -27,5 +27,6 @@ export interface Movimento {
     vlAtual:     string
     idSituac:    string
     idSitVen:    string
+    isInconsistent: boolean
 
 }

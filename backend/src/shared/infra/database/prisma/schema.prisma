@@ -36,4 +36,5 @@ model Movimento {
   vlAtual     String
   idSituac    String
   idSitVen    String
+  isInconsistent Boolean
 }

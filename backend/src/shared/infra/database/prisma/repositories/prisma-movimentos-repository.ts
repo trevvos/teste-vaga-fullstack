@@ -63,6 +63,7 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
             vlAtual: prismaMovimento.vlAtual,
             idSituac: prismaMovimento.idSituac,
             idSitVen: prismaMovimento.idSitVen,
+            isInconsistent: prismaMovimento.isInconsistent
         }
     }
 
@@ -96,6 +97,7 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
             vlAtual: movimento.vlAtual,
             idSituac: movimento.idSituac,
             idSitVen: movimento.idSitVen,
+            isInconsistent: movimento.isInconsistent
         }
     }
 

@@ -8,6 +8,7 @@ import { PrismaMovimentosRepository } from '../../../../shared/infra/database/pr
 import { convertToDate } from '../../../../utils/validations/date.utils';
 import { isValidMovimento } from '../../../../utils/validations/movimento.utils';
 import { formatCurrency } from '../../../../utils/formatters/currency-formatter.utils';
+import { isValidateTotalAndInstallments } from '../../../../utils/validations/is-validate-total-and-installments.utils';
 
 class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
     private readonly movimentoRepository: MovimentoRepository
@@ -22,7 +23,7 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
         return new Promise((resolve, reject) =>{
             fs.createReadStream(filePath)
                 .pipe(csvParser())
-                .on('data', (row) => {
+                .on('data', async (row) => {
 
                     if(isValidMovimento(row)){
 
@@ -49,22 +50,30 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                             vlPresta: formatCurrency(row.vlPresta),
                             vlMora: formatCurrency(row.vlMora),
                             vlMulta: formatCurrency(row.vlMulta),
-                            vlOutAcr: row.vlOutAcr,
-                            vlIof: row.vlIof,
-                            vlDescon: row.vlDescon,
+                            vlOutAcr: formatCurrency(row.vlOutAcr),
+                            vlIof: formatCurrency(row.vlIof),
+                            vlDescon: formatCurrency(row.vlDescon),
                             vlAtual: formatCurrency(row.vlAtual),
                             idSituac: row.idSituac,
-                            idSitVen: row.idSitVen
+                            idSitVen: row.idSitVen,
+                            isInconsistent: false
                         }
 
-                        movimentos.push(movimento)
-                    } else {
-                        //Apenas para fins de criar um Logger se necessário.
-                        console.log('Registro inválido: ', row)
+                        if(isValidateTotalAndInstallments(movimento)){
+                            
+                            movimentos.push(movimento)
+                        
+                        } else {
+                            //Adiciona os valores inconsistentes como true para ser sinalizado no frontend
+                            movimento.isInconsistent = true
+
+                            movimentos.push(movimento)
+                        }
                     }
                     
                 })
                 .on('end', async () => {
+                 
                     const createdMovimentos = await this.movimentoRepository.createMany(movimentos)
 
                     resolve(createdMovimentos)          
