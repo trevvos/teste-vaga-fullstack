@@ -7,6 +7,7 @@ import { MovimentoRepository } from '../../repositories/movimentos.repository';
 import { PrismaMovimentosRepository } from '../../../../shared/infra/database/prisma/repositories/prisma-movimentos-repository';
 import { convertToDate } from '../../../../utils/validations/date.utils';
 import { isValidMovimento } from '../../../../utils/validations/movimento.utils';
+import { formatCurrency } from '../../../../utils/formatters/currency-formatter.utils';
 
 class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
     private readonly movimentoRepository: MovimentoRepository
@@ -35,7 +36,7 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                             nrContrato: row.nrContrato,
                             dtContrato: convertToDate(row.dtContrato),
                             qtPrestacoes: row.qtPrestacoes,
-                            vlTotal: row.vlTotal,
+                            vlTotal: formatCurrency(row.vlTotal),
                             cdProduto: row.cdProduto,
                             dsProduto: row.dsProduto,
                             cdCarteira: row.cdCarteira,
@@ -45,20 +46,21 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                             tpPresta: row.tpPresta,
                             nrSeqPre: row.nrSeqPre,
                             dtVctPre: convertToDate(row.dtVctPre),
-                            vlPresta: row.vlPresta,
-                            vlMora: row.vlMora,
-                            vlMulta: row.vlMulta,
+                            vlPresta: formatCurrency(row.vlPresta),
+                            vlMora: formatCurrency(row.vlMora),
+                            vlMulta: formatCurrency(row.vlMulta),
                             vlOutAcr: row.vlOutAcr,
                             vlIof: row.vlIof,
                             vlDescon: row.vlDescon,
-                            vlAtual: row.vlAtual,
+                            vlAtual: formatCurrency(row.vlAtual),
                             idSituac: row.idSituac,
                             idSitVen: row.idSitVen
                         }
 
                         movimentos.push(movimento)
                     } else {
-                        console.log('Registro inválido: ', row.nrCpfCnpj)
+                        //Apenas para fins de criar um Logger se necessário.
+                        console.log('Registro inválido: ', row)
                     }
                     
                 })
