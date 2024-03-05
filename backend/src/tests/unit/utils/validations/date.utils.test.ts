@@ -1,4 +1,4 @@
-import { convertToDate } from "../../../utils/validations/date.utils"
+import { convertToDate } from "../../../../utils/validations/date.utils"
 
 describe("Convert to Date", () => {
     it('should convet a valid date string to a Date object', () => {
