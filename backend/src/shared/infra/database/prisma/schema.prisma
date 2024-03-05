@@ -8,33 +8,32 @@ datasource db {
 }
 
 model Movimento {
-  id          Int @id @default(autoincrement())
-  nrInst      Int
-  nrAgencia   Int
-  cdClient    Int
+  id          String @id @default(uuid())
+  nrInst      String
+  nrAgencia   String
+  cdClient    String
   nmClient    String
   nrCpfCnpj   String
-  nrContrato  Int
+  nrContrato  String
   dtContrato  DateTime
-  qtPrestacoes Int
-  vlTotal     Float
-  cdProduto   Int
+  qtPrestacoes String
+  vlTotal     String
+  cdProduto   String
   dsProduto   String
-  cdCarteira  Int
+  cdCarteira  String
   dsCarteira  String
-  nrProposta  Int
-  nrPresta    Int
+  nrProposta  String
+  nrPresta    String
   tpPresta    String
-  nrSeqPre    Int
-  dtSeqPre    Int
+  nrSeqPre    String
   dtVctPre    DateTime
-  vlPresta    Float
-  vlMora      Float
-  vlMulta     Float
-  vlOutAcr    Float
-  vlIof       Float
-  vlDescon    Float
-  vlAtual     Float
+  vlPresta    String
+  vlMora      String
+  vlMulta     String
+  vlOutAcr    String
+  vlIof       String
+  vlDescon    String
+  vlAtual     String
   idSituac    String
   idSitVen    String
 }

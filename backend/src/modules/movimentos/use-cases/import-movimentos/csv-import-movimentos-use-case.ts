@@ -1,9 +1,18 @@
 import fs from 'fs'
+import { v4 as uuidv4} from 'uuid'
 import csvParser from 'csv-parser';
 import { Movimento } from "../../entities/Movimento";
 import { ImportMovimentosUseCase } from "./import-movimentos-use-case";
+import { MovimentoRepository } from '../../repositories/movimentos.repository';
+import { PrismaMovimentosRepository } from '../../../../shared/infra/database/prisma/repositories/prisma-movimentos-repository';
 
 class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
+    private readonly movimentoRepository: MovimentoRepository
+
+    constructor(){
+        this.movimentoRepository = new PrismaMovimentosRepository()
+    }
+
     execute(filePath: string): Promise<Movimento[]> {
         const movimentos: Movimento[] = []
 
@@ -12,6 +21,7 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                 .pipe(csvParser())
                 .on('data', (row) => {
                     const movimento: Movimento = {
+                        id: uuidv4(),
                         nrInst: row.nrInst,
                         nrAgencia: row.nrAgencia,
                         cdClient: row.cdClient,
@@ -29,7 +39,6 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
                         nrPresta: row.nrPresta,
                         tpPresta: row.tpPresta,
                         nrSeqPre: row.nrSeqPre,
-                        dtSeqPre: row.dtSeqPre,
                         dtVctPre: row.dtVctPre,
                         vlPresta: row.vlPresta,
                         vlMora: row.vlMora,
@@ -44,8 +53,10 @@ class CsvImportMovimentosUseCase implements ImportMovimentosUseCase{
 
                     movimentos.push(movimento)
                 })
-                .on('end', () => {
-                    resolve(movimentos)
+                .on('end', async () => {
+                    const createdMovimentos = await this.movimentoRepository.createMany(movimentos)
+
+                    resolve(createdMovimentos)          
                 })
                 .on('error', (error) =>{
                     reject(error)

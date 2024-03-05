@@ -1,11 +1,14 @@
 {
   "name": "teste-vaga-fullstack",
   "version": "1.0.0",
+  "prisma": {
+    "schema": "./src/shared/infra/database/prisma/schema.prisma"
+  },
   "description": "Teste vaga fullstack",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node src/app.ts"
+    "dev": "ts-node src/shared/infra/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,11 +22,13 @@
     "pg": "^8.11.3",
     "prisma": "^5.10.2",
     "supertest": "^6.3.4",
-    "ts-jest": "^29.1.2"
+    "ts-jest": "^29.1.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/supertest": "^6.0.2",
+    "@types/uuid": "^9.0.8",
     "ts-node": "^10.9.2"
   }
 }
