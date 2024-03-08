@@ -20,9 +20,18 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
         return createdMovimentos.map(this.mapToMovimento)
     }   
 
-    findAll(): Promise<Movimento[]> {
-        throw new Error("Method not implemented.");
+    async findAll(page: number, pageSize: number): Promise<Movimento[]> {
+        
+        const skip = (page - 1) * pageSize
+
+        const movimentos: PrismaMovimento[] = await this.prisma.movimento.findMany({
+            skip,
+            take: pageSize
+        })
+
+        return movimentos.map(this.mapToMovimento)
     }
+
     findById(id: number): Promise<Movimento | null> {
         throw new Error("Method not implemented.");
     }

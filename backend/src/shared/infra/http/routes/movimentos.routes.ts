@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import multer from 'multer';
-import { MovimentoImportController } from '../controllers/movimento-import.controller'
+import { MovimentoImportController } from '../controllers/movimento.controller'
+import { container } from 'tsyringe';
 
 const movimentosRoutes = Router()
 
@@ -15,8 +16,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-const movimentoImportController = new MovimentoImportController()
+const movimentoImportController = container.resolve(MovimentoImportController)
 
-movimentosRoutes.post('/import', upload.single('file'), movimentoImportController.handle)
+movimentosRoutes.post('/import', upload.single('file'), movimentoImportController.handleImportMovimentos)
+movimentosRoutes.get('/all', movimentoImportController.handleGetMovimentos)
 
 export { movimentosRoutes }
