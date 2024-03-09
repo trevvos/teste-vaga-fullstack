@@ -1,13 +1,10 @@
 import { Request, Response } from 'express'
-import { container, inject, injectable } from 'tsyringe'
+import { container } from 'tsyringe'
 import { CsvImportMovimentosUseCase } from '../../../../modules/movimentos/use-cases/import-movimentos/csv-import-movimentos.use-case'
-import { MovimentoRepository } from '../../../../modules/movimentos/repositories/movimentos.repository'
-import { MovimentoImportService } from '../../../../modules/movimentos/services/movimento-import.service'
 import { PrismaMovimentosRepository } from '../../database/prisma/repositories/prisma-movimentos.repository'
 import { NoMovimentoFoundError } from '../../../../modules/errors/no-movimentos-found.error'
 import { NoFileCsvEnableError } from '../../../../modules/errors/no-file-csv-enable.error'
 
-@injectable()
 export class MovimentoImportController {
 
     async handleImportMovimentos(req: Request, res: Response): Promise<void>{
@@ -34,7 +31,12 @@ export class MovimentoImportController {
 
             const movimentos = await importRepository.findAll(page, pageSize)
 
-            res.status(200).json(movimentos)
+            res.status(200).json(
+                {
+                    totalByPage: movimentos.length,
+                    movimentos
+                }
+            )
 
     }
 
