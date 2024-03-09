@@ -32,15 +32,17 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
         return movimentos.map(this.mapToMovimento)
     }
 
-    findById(id: number): Promise<Movimento | null> {
-        throw new Error("Method not implemented.");
+   async findById(id: string): Promise<Movimento | null> {
+
+            const movimento = await this.prisma.movimento.findUnique({
+                where: {
+                    id
+                },
+            })
+
+            return movimento ? this.mapToMovimento(movimento) : null
     }
 
-    async create(movimento: Movimento): Promise<Movimento> {
-        return await this.prisma.movimento.create({
-            data: movimento
-        })
-    }
 
     private mapToMovimento(prismaMovimento: PrismaMovimento): Movimento{
         return {

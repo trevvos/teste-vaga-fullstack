@@ -36,16 +36,32 @@ export class MovimentoImportController {
             const page = parseInt(req.query.page as string) || 1
             const pageSize = parseInt(req.query.pageSize as string) || 10
 
-            console.log(page, pageSize)
+            const importRepository = container.resolve(PrismaMovimentosRepository)
 
-            const importUseCase = container.resolve(PrismaMovimentosRepository)
-
-            const movimentos = await importUseCase.findAll(page, pageSize)
+            const movimentos = await importRepository.findAll(page, pageSize)
 
             res.status(200).json(movimentos)
 
         } catch (error: any) {
             res.status(500).json({ error: error.message })
+        }
+    }
+
+    async handleGetMovimentoById(req: Request, res: Response): Promise<void>{
+        try {
+            const id = req.params.id
+            const importRepository = container.resolve(PrismaMovimentosRepository)
+            const movimento = await importRepository.findById(id)
+
+            if(movimento){
+                res.status(200).json(movimento)
+            } else {
+                console.log(id)
+                res.status(404).json({ error: 'Movimento não encontrado'})
+            }
+
+        } catch (error: any) {
+            res.status(500).json({error: error.message})
         }
     }
 } 

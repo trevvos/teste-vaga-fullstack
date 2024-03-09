@@ -20,5 +20,6 @@ const movimentoImportController = container.resolve(MovimentoImportController)
 
 movimentosRoutes.post('/import', upload.single('file'), movimentoImportController.handleImportMovimentos)
 movimentosRoutes.get('/all', movimentoImportController.handleGetMovimentos)
+movimentosRoutes.get('/import/:id', movimentoImportController.handleGetMovimentoById)
 
 export { movimentosRoutes }
