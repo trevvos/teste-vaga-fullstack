@@ -4,35 +4,29 @@ import { CsvImportMovimentosUseCase } from '../../../../modules/movimentos/use-c
 import { MovimentoRepository } from '../../../../modules/movimentos/repositories/movimentos.repository'
 import { MovimentoImportService } from '../../../../modules/movimentos/services/movimento-import.service'
 import { PrismaMovimentosRepository } from '../../database/prisma/repositories/prisma-movimentos.repository'
+import { NoMovimentoFoundError } from '../../../../modules/errors/no-movimentos-found.error'
+import { NoFileCsvEnableError } from '../../../../modules/errors/no-file-csv-enable.error'
 
 @injectable()
 export class MovimentoImportController {
 
-
     async handleImportMovimentos(req: Request, res: Response): Promise<void>{
 
         const importUseCase = container.resolve(CsvImportMovimentosUseCase)
-    
-        try {
 
             if(!req.file || req.file.mimetype !== 'text/csv'){
-                res.status(400).json({ error: 'Apenas arquivos CSV são permitidos.'})
-                return
+                throw new NoFileCsvEnableError()
             }
 
             const filePath = req.file.path
 
             await importUseCase.execute(filePath)
            
-            res.status(200).json({message: "Arquivo importado com sucess"})
+            res.status(200).json({message: "Arquivo importado com sucesso"})
 
-        } catch (error: any) {
-            res.status(500).json({ error: error.message })
-        }
     }
 
     async handleGetMovimentos(req: Request, res: Response):Promise<void>{
-        try {
             const page = parseInt(req.query.page as string) || 1
             const pageSize = parseInt(req.query.pageSize as string) || 10
 
@@ -42,13 +36,9 @@ export class MovimentoImportController {
 
             res.status(200).json(movimentos)
 
-        } catch (error: any) {
-            res.status(500).json({ error: error.message })
-        }
     }
 
     async handleGetMovimentoById(req: Request, res: Response): Promise<void>{
-        try {
             const id = req.params.id
             const importRepository = container.resolve(PrismaMovimentosRepository)
             const movimento = await importRepository.findById(id)
@@ -56,12 +46,7 @@ export class MovimentoImportController {
             if(movimento){
                 res.status(200).json(movimento)
             } else {
-                console.log(id)
-                res.status(404).json({ error: 'Movimento não encontrado'})
+                throw new NoMovimentoFoundError()
             }
-
-        } catch (error: any) {
-            res.status(500).json({error: error.message})
-        }
     }
 } 
