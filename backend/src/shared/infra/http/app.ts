@@ -2,9 +2,12 @@ import "reflect-metadata"
 import "express-async-errors"
 import express from 'express'
 import cors from 'cors'
+import dotenv from 'dotenv'
 import "../container"
 import { router } from './routes'
 import { errorMiddleware } from "./middlewares/error"
+
+dotenv.config()
 
 const app = express()
 
