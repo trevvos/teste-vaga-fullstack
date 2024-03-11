@@ -29,11 +29,13 @@ export class MovimentoImportController {
 
             const importRepository = container.resolve(PrismaMovimentosRepository)
 
+            const total = await importRepository.count()
+
             const movimentos = await importRepository.findAll(page, pageSize)
 
             res.status(200).json(
                 {
-                    totalByPage: movimentos.length,
+                    total,
                     movimentos
                 }
             )

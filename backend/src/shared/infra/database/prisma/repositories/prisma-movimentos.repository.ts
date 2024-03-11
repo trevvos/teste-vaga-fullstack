@@ -11,6 +11,10 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
         this.prisma = new PrismaClient()
     }
 
+    async count(): Promise<number> {
+        return await this.prisma.movimento.count()
+    }
+
     async createMany(movimentos: Movimento[]): Promise<Movimento[]>{
         const createdMovimentos: PrismaMovimento[] = await Promise.all(
            
