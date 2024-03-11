@@ -1,5 +1,5 @@
-import { NewTransactionModal } from "../NewTransactionModal";
-import { HeaderContainer, HeaderContent, NewTransactionButton } from "./styles";
+import { NewMovimentoModal } from "../NewMovimentoModal";
+import { HeaderContainer, HeaderContent, NewMovimentoButton } from "./styles";
 import * as Dialog from '@radix-ui/react-dialog';
 
 export function Header() {
@@ -10,10 +10,10 @@ export function Header() {
 
                 <Dialog.Root>
                     <Dialog.Trigger asChild>
-                        <NewTransactionButton>Importar CSV</NewTransactionButton>
+                        <NewMovimentoButton>Importar CSV</NewMovimentoButton>
                     </Dialog.Trigger>
 
-                    <NewTransactionModal />
+                    <NewMovimentoModal />
                 </Dialog.Root>
             </HeaderContent>
         </HeaderContainer>
