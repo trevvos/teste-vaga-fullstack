@@ -24,18 +24,17 @@ export class MovimentoImportController {
     }
 
     async handleGetMovimentos(req: Request, res: Response):Promise<void>{
-            const page = parseInt(req.query.page as string) || 1
-            const pageSize = parseInt(req.query.pageSize as string) || 10
-
-            const importRepository = container.resolve(PrismaMovimentosRepository)
-
-            const total = await importRepository.count()
-
-            const movimentos = await importRepository.findAll(page, pageSize)
-
+        
+        const importRepository = container.resolve(PrismaMovimentosRepository)
+        const page = parseInt(req.query.page as string) || 1
+        const total = await importRepository.count()
+        const pageSize = parseInt(req.query.pageSize as string) || total
+        const {movimentos, summary} = await importRepository.findAll(page, pageSize)
+           
             res.status(200).json(
                 {
                     total,
+                    summary,
                     movimentos
                 }
             )

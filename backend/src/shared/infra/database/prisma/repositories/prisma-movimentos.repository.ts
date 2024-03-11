@@ -1,6 +1,7 @@
 import { PrismaClient, Movimento as PrismaMovimento } from "@prisma/client";
 import { Movimento } from "../../../../../modules/movimentos/entities/Movimento";
-import { MovimentoRepository } from "../../../../../modules/movimentos/repositories/movimentos.repository";
+import { MovimentoRepository, Summary } from "../../../../../modules/movimentos/repositories/movimentos.repository";
+
 
 
 export class PrismaMovimentosRepository implements MovimentoRepository {
@@ -24,7 +25,7 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
         return createdMovimentos.map(this.mapToMovimento)
     }   
 
-    async findAll(page: number, pageSize: number): Promise<Movimento[]> {
+    async findAll(page: number, pageSize: number): Promise<{movimentos: Movimento[]; summary: Summary}> {
         
         const skip = (page - 1) * pageSize
 
@@ -33,7 +34,27 @@ export class PrismaMovimentosRepository implements MovimentoRepository {
             take: pageSize
         })
 
-        return movimentos.map(this.mapToMovimento)
+        const summary: Summary = movimentos.reduce(
+            (acc, movimento) => {
+                if(movimento.isInconsistent){
+                    acc.isInconsistent++
+                }else {
+                    acc.ok++
+                }
+                return acc
+            },
+            {
+                isInconsistent: 0,
+                ok: 0
+            }
+        )
+
+        const mappedMovimentos = movimentos.map(this.mapToMovimento)
+
+        return {
+            movimentos: mappedMovimentos,
+            summary
+        }
     }
 
    async findById(id: string): Promise<Movimento | null> {
