@@ -1,74 +1,83 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { Summary } from "../../components/Summary";
 import { SearchForm } from "./components/SearchForm";
-import { PriceHighlight, TransactionsContainer, TransactionsTable } from "./styles";
+import { MovimentosContainer, MovimentosPagination, MovimentosTable, PriceHighlight } from "./styles";
+import { Movimento, MovimentosContext } from "../../contexts/MovimentosContext";
+import ReactPaginate from "react-paginate";
 
-interface Movimento {
-    id:         string
-    nrInst:     string
-    nrAgencia:   string
-    cdClient:    string
-    nmClient:    string
-    nrCpfCnpj:   string
-    nrContrato:  string
-    dtContrato:  Date
-    qtPrestacoes: string
-    vlTotal:     string
-    cdProduto:   string
-    dsProduto:   string
-    cdCarteira:  string
-    dsCarteira:  string
-    nrProposta:  string
-    nrPresta:    string
-    tpPresta:    string
-    nrSeqPre:    string
-    dtVctPre:    Date
-    vlPresta:    string
-    vlMora:      string
-    vlMulta:     string
-    vlOutAcr:    string
-    vlIof:       string
-    vlDescon:    string
-    vlAtual:     string
-    idSituac:    string
-    idSitVen:    string
-    isInconsistent: boolean
 
-}
 
 export function Movimentos() {
+    const {  total } = useContext(MovimentosContext)
+    const [currentPage, setCurrentPage] = useState(0)
     const [movimentos, setMovimentos] = useState<Movimento[]>([])
-
-    async function loadMovimentos(){
-        const response  = await fetch('http://localhost:3000/movimentos/all')
-        const data = await response.json()
-
-        setMovimentos(data.movimentos)
-    }
+    const itemsPerPage = 10
 
     useEffect(() => {
-        loadMovimentos()
+      
+        loadMovimentos(1);
     }, [])
+
+    const loadMovimentos = async (page: number) => {
+        const response = await fetch(`http://localhost:3000/movimentos/all?page=${page}&pageSize=${itemsPerPage}`);
+        const data = await response.json()
+        
+        setMovimentos(data.movimentos)
+    };
+
+
+    const handlePageChange = (selectedItem: { selected: number }) => {
+        setCurrentPage(selectedItem.selected);
+        loadMovimentos(selectedItem.selected);
+    };
 
     return (
         <div>
             <Header />
             <Summary />
             <SearchForm />
-            <TransactionsContainer>
-                
-                <TransactionsTable>
+            <MovimentosContainer>
+                <MovimentosTable>
+                <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Nr. Inst</th>
+                            <th>Nr. Agencia</th>
+                            <th>Cd. Client</th>
+                            <th>Nm. Client</th>
+                            <th>Nr. CpfCnpj</th>
+                            <th>Nr. Contrato</th>
+                            <th>Qt. Prestacoes</th>
+                            <th>Vl. Total</th>
+                            <th>Cd. Produto</th>
+                            <th>Ds. Produto</th>
+                            <th>Cd. Carteira</th>
+                            <th>Nr. Proposta</th>
+                            <th>Nr. Presta</th>
+                            <th>Tp. Presta</th>
+                            <th>Nr. SeqPre</th>
+                            <th>Dt. VctPre</th>
+                            <th>Vl. Presta</th>
+                            <th>Vl. Mora</th>
+                            <th>Vl. Multa</th>
+                            <th>Vl. Out Acr</th>
+                            <th>Vl. Iof</th>
+                            <th>Vl. Descon</th>
+                            <th>Id. Situac</th>
+            
+                        </tr>
+                    </thead>
                     <tbody>
                         {movimentos.map(movimento => {
                             return (
                                 <tr>
                                        <td>
-                                <PriceHighlight variant="income">
+                                
                                     {
-                                        (movimento.isInconsistent ? 'Inconsistente' : 'OK')
+                                        (movimento.isInconsistent ? <PriceHighlight variant="outcome">Inconsistente</PriceHighlight> : <PriceHighlight variant="income">OK</PriceHighlight>)
                                     }
-                                </PriceHighlight>
+                                
                                 </td>
                                 <td>{movimento.nrInst}</td>
                                 <td>{movimento.nrAgencia}</td>
@@ -100,8 +109,18 @@ export function Movimentos() {
                         })}
 
                     </tbody>
-                </TransactionsTable>
-            </TransactionsContainer>
+                </MovimentosTable>
+                
+            </MovimentosContainer>
+            <MovimentosPagination>
+                <ReactPaginate
+                    pageCount={Math.ceil(total / itemsPerPage)}
+                    onPageChange={handlePageChange}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                />
+            </MovimentosPagination>
+        
         </div>
     )
 }

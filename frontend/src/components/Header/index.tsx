@@ -10,7 +10,7 @@ export function Header() {
 
                 <Dialog.Root>
                     <Dialog.Trigger asChild>
-                        <NewTransactionButton>Novo movimento</NewTransactionButton>
+                        <NewTransactionButton>Importar CSV</NewTransactionButton>
                     </Dialog.Trigger>
 
                     <NewTransactionModal />

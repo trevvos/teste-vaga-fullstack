@@ -1,7 +1,14 @@
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react"
 import { SummaryCard, SummaryContainer } from "./styles"
+import { useContext } from "react"
+import { MovimentosContext } from "../../contexts/MovimentosContext"
 
 export function Summary() {
+    const { total, summary } = useContext(MovimentosContext)
+
+    console.log(summary)
+
+    
     return (
         <SummaryContainer>
             <SummaryCard>
@@ -9,7 +16,7 @@ export function Summary() {
                     <span>Total de movimentos</span>
                     <ArrowCircleUp size={32} color="#00b37e" />
                 </header>
-                <strong>20</strong>
+                <strong>{total}</strong>
             </SummaryCard>
 
             <SummaryCard>
@@ -17,7 +24,7 @@ export function Summary() {
                     <span>Movimentos Inconsistentes</span>
                     <ArrowCircleDown size={32} color="#f75a68" />
                 </header>
-                <strong>5</strong>
+                <strong>{summary.isInconsistent}</strong>
             </SummaryCard>
 
             <SummaryCard variant="green">
@@ -25,7 +32,7 @@ export function Summary() {
                     <span>Movimentos OK</span>
                     <CurrencyDollar size={32} color="#fff" />
                 </header>
-                <strong>0</strong>
+                <strong>{summary.ok}</strong>
             </SummaryCard>
         </SummaryContainer>
     )
